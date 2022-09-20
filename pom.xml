@@ -36,10 +36,15 @@
         Versions are based on IDE releases, e.g.: RELEASE691
         To create your own repository, use: nbm:populate-repository
         -->
+<!--        <repository>-->
+<!--            <id>git-corfixen</id>-->
+<!--            <name>corfixen's Git based repo</name>-->
+<!--            <url>https://github.com/sweat-tek/MavenRepository/raw/repository/</url>-->
+<!--        </repository>-->
         <repository>
-            <id>git-corfixen</id>
-            <name>corfixen's Git based repo</name>
-            <url>https://github.com/sweat-tek/MavenRepository/raw/repository/</url>
+            <id>sweat-tek-repo</id>
+            <name>Sweat TEK Repository</name>
+            <url>https://maven.pkg.github.com/sweat-tek/MavenRepository</url>
         </repository>
     </repositories>
     <description>This is a fork of jhotdraw from http://sourceforge.net/projects/jhotdraw</description>
