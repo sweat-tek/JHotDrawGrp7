@@ -12,8 +12,6 @@ import org.jhotdraw.app.OSXApplication;
 import org.jhotdraw.app.SDIApplication;
 import org.jhotdraw.util.ResourceBundleUtil;
 
-import java.time.Instant;
-
 /**
  * Main entry point of the SVG sample application. Creates an {@link Application}
  * depending on the operating system we run, sets the {@link SVGApplicationModel}
@@ -29,15 +27,6 @@ public class Main {
      * Creates a new instance.
      */
     public static void main(String[] args) {
-        //Testing newer Java 17 features
-        var testTime = Instant.now();
-
-        var asObject = (Object) testTime;
-
-        if (asObject instanceof Instant timestamp) {
-            System.out.println("Time is " + timestamp.getEpochSecond());
-        }
-
         // Debug resource bundle
         ResourceBundleUtil.setVerbose(true);
         Application app;
