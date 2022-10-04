@@ -12,6 +12,8 @@ import java.beans.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.undo.*;
+
+import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.util.*;
 
 /**
@@ -78,6 +80,7 @@ public class UndoRedoManager extends UndoManager { //javax.swing.undo.UndoManage
         /**
          * Invoked when an action occurs.
          */
+        @FeatureEntryPoint("UndoAction")
         @Override
         public void actionPerformed(ActionEvent evt) {
             try {
@@ -105,6 +108,7 @@ public class UndoRedoManager extends UndoManager { //javax.swing.undo.UndoManage
         /**
          * Invoked when an action occurs.
          */
+        @FeatureEntryPoint("RedoAction")
         @Override
         public void actionPerformed(ActionEvent evt) {
             try {
