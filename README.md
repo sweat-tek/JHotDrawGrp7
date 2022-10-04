@@ -1,3 +1,6 @@
+# BetterCodeHub compliance
+[![BCH compliance](https://bettercodehub.com/edge/badge/sweat-tek/JHotDrawGrp7?branch=develop)](https://bettercodehub.com/)
+
 # jhotdraw
 
 * maven build process
