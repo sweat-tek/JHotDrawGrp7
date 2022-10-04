@@ -7,7 +7,6 @@
  */
 package org.jhotdraw.draw.handle;
 
-import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.draw.figure.Figure;
 import java.awt.*;
 import java.awt.event.*;
