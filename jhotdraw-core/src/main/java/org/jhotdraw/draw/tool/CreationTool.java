@@ -7,6 +7,7 @@
  */
 package org.jhotdraw.draw.tool;
 
+import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.draw.figure.Figure;
 import org.jhotdraw.draw.figure.CompositeFigure;
 import java.awt.*;
@@ -273,6 +274,7 @@ public class CreationTool extends AbstractTool {
     }
 
     @SuppressWarnings("unchecked")
+    @FeatureEntryPoint("createFigureAction")
     protected Figure createFigure() {
         Figure f = prototype.clone();
         getEditor().applyDefaultAttributesTo(f);

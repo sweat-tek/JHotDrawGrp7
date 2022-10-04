@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
+
 import org.jhotdraw.action.edit.DuplicateAction;
 import org.jhotdraw.draw.AttributeKey;
 import org.jhotdraw.draw.AttributeKeys;
