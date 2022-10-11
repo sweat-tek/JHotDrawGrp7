@@ -42,7 +42,7 @@
 <!--            <url>https://github.com/sweat-tek/MavenRepository/raw/repository/</url>-->
 <!--        </repository>-->
         <repository>
-            <id>sweat-tek-repo</id>
+            <id>github</id>
             <name>Sweat TEK Repository</name>
             <url>https://maven.pkg.github.com/sweat-tek/MavenRepository</url>
         </repository>
