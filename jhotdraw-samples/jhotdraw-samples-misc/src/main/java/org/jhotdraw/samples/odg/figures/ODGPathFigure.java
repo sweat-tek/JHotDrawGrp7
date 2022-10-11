@@ -340,56 +340,7 @@ public class ODGPathFigure extends AbstractAttributedCompositeFigure implements 
         final ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.samples.odg.Labels");
         LinkedList<Action> actions = new LinkedList<Action>();
         if (get(TRANSFORM) != null) {
-            actions.add(new AbstractAction(labels.getString("edit.removeTransform.text")) {
-                private static final long serialVersionUID = 1L;
-
-                @Override
-                public void actionPerformed(ActionEvent evt) {
-                    willChange();
-                    fireUndoableEditHappened(
-                            TRANSFORM.setUndoable(ODGPathFigure.this, null));
-                    changed();
-                }
-            });
-            actions.add(new AbstractAction(labels.getString("edit.flattenTransform.text")) {
-                private static final long serialVersionUID = 1L;
-
-                @Override
-                public void actionPerformed(ActionEvent evt) {
-                    // CompositeEdit edit = new CompositeEdit(labels.getString("flattenTransform"));
-                    //TransformEdit edit = new TransformEdit(ODGPathFigure.this, )
-                    final Object restoreData = getTransformRestoreData();
-                    UndoableEdit edit = new AbstractUndoableEdit() {
-                        private static final long serialVersionUID = 1L;
-
-                        @Override
-                        public String getPresentationName() {
-                            return labels.getString("flattenTransform");
-                        }
-
-                        @Override
-                        public void undo() throws CannotUndoException {
-                            super.undo();
-                            willChange();
-                            restoreTransformTo(restoreData);
-                            changed();
-                        }
-
-                        @Override
-                        public void redo() throws CannotRedoException {
-                            super.redo();
-                            willChange();
-                            restoreTransformTo(restoreData);
-                            flattenTransform();
-                            changed();
-                        }
-                    };
-                    willChange();
-                    flattenTransform();
-                    changed();
-                    fireUndoableEditHappened(edit);
-                }
-            });
+            addTransformActions(actions, labels);
         }
         actions.add(new AbstractAction(labels.getString("closePath")) {
             private static final long serialVersionUID = 1L;
@@ -440,6 +391,63 @@ public class ODGPathFigure extends AbstractAttributedCompositeFigure implements 
             }
         });
         return actions;
+    }
+
+    private void addTransformActions(LinkedList<Action> actions, ResourceBundleUtil labels) {
+        actions.add(new AbstractAction(labels.getString("edit.removeTransform.text")) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                willChange();
+                fireUndoableEditHappened(
+                        TRANSFORM.setUndoable(ODGPathFigure.this, null));
+                changed();
+            }
+        });
+        actions.add(new AbstractAction(labels.getString("edit.flattenTransform.text")) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                // CompositeEdit edit = new CompositeEdit(labels.getString("flattenTransform"));
+                //TransformEdit edit = new TransformEdit(ODGPathFigure.this, )
+                final Object restoreData = getTransformRestoreData();
+                UndoableEdit edit = createFlattenTransformEdit(restoreData, labels);
+                willChange();
+                flattenTransform();
+                changed();
+                fireUndoableEditHappened(edit);
+            }
+        });
+    }
+
+    private AbstractUndoableEdit createFlattenTransformEdit(Object restoreData, ResourceBundleUtil labels) {
+        return new AbstractUndoableEdit() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public String getPresentationName() {
+                return labels.getString("flattenTransform");
+            }
+
+            @Override
+            public void undo() throws CannotUndoException {
+                super.undo();
+                willChange();
+                restoreTransformTo(restoreData);
+                changed();
+            }
+
+            @Override
+            public void redo() throws CannotRedoException {
+                super.redo();
+                willChange();
+                restoreTransformTo(restoreData);
+                flattenTransform();
+                changed();
+            }
+        };
     }
 
     // CONNECTING

@@ -1303,7 +1303,11 @@ public class DefaultDrawingView
         }
         clearSelection();
         getDrawing().removeAll(deletedFigures);
-        getDrawing().fireUndoableEditHappened(new AbstractUndoableEdit() {
+        getDrawing().fireUndoableEditHappened(createDeleteEdit(deletedFigures, deletedFigureIndices));
+    }
+
+    private AbstractUndoableEdit createDeleteEdit(java.util.List<Figure> deletedFigures, int[] deletedFigureIndices) {
+        return new AbstractUndoableEdit() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -1332,7 +1336,7 @@ public class DefaultDrawingView
                     drawing.remove(deletedFigures.get(i));
                 }
             }
-        });
+        };
     }
 
     @Override
@@ -1354,7 +1358,11 @@ public class DefaultDrawingView
             f.remap(originalToDuplicateMap, false);
         }
         addToSelection(duplicates);
-        getDrawing().fireUndoableEditHappened(new AbstractUndoableEdit() {
+        getDrawing().fireUndoableEditHappened(createDuplicateEdit(duplicates));
+    }
+
+    private AbstractUndoableEdit createDuplicateEdit(ArrayList<Figure> duplicates) {
+        return new AbstractUndoableEdit() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -1374,7 +1382,7 @@ public class DefaultDrawingView
                 super.redo();
                 getDrawing().addAll(duplicates);
             }
-        });
+        };
     }
 
     @Override

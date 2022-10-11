@@ -100,7 +100,13 @@ public class AttributeAction extends AbstractSelectedAction {
             }
             figure.changed();
         }
-        UndoableEdit edit = new AbstractUndoableEdit() {
+        UndoableEdit edit = createAppliedEdit(selectedFigures, restoreData, a);
+        getDrawing().fireUndoableEditHappened(edit);
+    }
+
+    private AbstractUndoableEdit createAppliedEdit(ArrayList<Figure> selectedFigures, ArrayList<Object> restoreData,
+                                                   Map<AttributeKey<?>, Object> a) {
+        return new AbstractUndoableEdit() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -140,7 +146,6 @@ public class AttributeAction extends AbstractSelectedAction {
                 }
             }
         };
-        getDrawing().fireUndoableEditHappened(edit);
     }
 
     @Override

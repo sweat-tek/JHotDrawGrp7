@@ -238,28 +238,7 @@ public class CreationTool extends AbstractTool {
                 if (createdFigure instanceof CompositeFigure) {
                     ((CompositeFigure) createdFigure).layout();
                 }
-                final Figure addedFigure = createdFigure;
-                final Drawing addedDrawing = getDrawing();
-                getDrawing().fireUndoableEditHappened(new AbstractUndoableEdit() {
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
-                    public String getPresentationName() {
-                        return presentationName;
-                    }
-
-                    @Override
-                    public void undo() throws CannotUndoException {
-                        super.undo();
-                        addedDrawing.remove(addedFigure);
-                    }
-
-                    @Override
-                    public void redo() throws CannotRedoException {
-                        super.redo();
-                        addedDrawing.add(addedFigure);
-                    }
-                });
+                getDrawing().fireUndoableEditHappened(createMouseReleasedEdit(createdFigure, getDrawing()));
                 Rectangle r = new Rectangle(anchor.x, anchor.y, 0, 0);
                 r.add(evt.getX(), evt.getY());
                 maybeFireBoundsInvalidated(r);
@@ -271,6 +250,29 @@ public class CreationTool extends AbstractTool {
                 fireToolDone();
             }
         }
+    }
+
+    private AbstractUndoableEdit createMouseReleasedEdit(Figure addedFigure, Drawing addedDrawing) {
+        return new AbstractUndoableEdit() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public String getPresentationName() {
+                return presentationName;
+            }
+
+            @Override
+            public void undo() throws CannotUndoException {
+                super.undo();
+                addedDrawing.remove(addedFigure);
+            }
+
+            @Override
+            public void redo() throws CannotRedoException {
+                super.redo();
+                addedDrawing.add(addedFigure);
+            }
+        };
     }
 
     @SuppressWarnings("unchecked")
