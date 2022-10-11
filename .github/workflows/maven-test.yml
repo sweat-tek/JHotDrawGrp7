@@ -22,14 +22,14 @@ jobs:
           cache: maven
       - name: Build and Test with Maven
         run: mvn -s maven-settings.xml --batch-mode --update-snapshots -Dsurefire.failIfNoSpecifiedTests=false verify
+        env:
+          SECRET_USER_NAME: ${{ secrets.PAT_USERNAME }}
+          SECRET_USER_TOKEN: ${{ secrets.PAT_PASSWORD }}
       - name: Publish Test Report
         if: ${{ always() }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
         uses: scacap/action-surefire-report@v1.0.5
-        env:
-          SECRET_USER_NAME: ${{ secrets.PAT_USERNAME }}
-          SECRET_USER_TOKEN: ${{ secrets.PAT_PASSWORD }}
 
 # UNCOMMENT FOR ARTIFACT PUBLISHING
      # - name: copy artifacts
