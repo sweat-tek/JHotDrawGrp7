@@ -11,9 +11,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
@@ -23,12 +21,15 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Build and Test with Maven
-        run: mvn --batch-mode --update-snapshots -Dsurefire.failIfNoSpecifiedTests=false verify
+        run: mvn -s maven-settings.xml --batch-mode --update-snapshots -Dsurefire.failIfNoSpecifiedTests=false verify
       - name: Publish Test Report
         if: ${{ always() }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
         uses: scacap/action-surefire-report@v1.0.5
+        env:
+          SECRET_USER_NAME: ${{ secrets.PAT_USERNAME }}
+          SECRET_USER_TOKEN: ${{ secrets.PAT_PASSWORD }}
 
 # UNCOMMENT FOR ARTIFACT PUBLISHING
      # - name: copy artifacts
