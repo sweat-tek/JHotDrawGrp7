@@ -188,6 +188,7 @@ public class CreationTool extends AbstractTool {
     }
 
     @Override
+    @FeatureEntryPoint("createFigureAction")
     public void mousePressed(MouseEvent evt) {
         super.mousePressed(evt);
         if (getView() == null) {
@@ -274,7 +275,6 @@ public class CreationTool extends AbstractTool {
     }
 
     @SuppressWarnings("unchecked")
-    @FeatureEntryPoint("createFigureAction")
     protected Figure createFigure() {
         Figure f = prototype.clone();
         getEditor().applyDefaultAttributesTo(f);
