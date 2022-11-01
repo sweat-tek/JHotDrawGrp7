@@ -179,6 +179,7 @@ public class ResizeHandleKit {
         }
 
         @Override
+        @FeatureEntryPoint("SetBoundsAction")
         public void trackStep(Point anchor, Point lead, int modifiersEx) {
             if (!isTransformableCache) {
                 return;
@@ -211,7 +212,6 @@ public class ResizeHandleKit {
         protected void trackStepNormalized(Point2D.Double p, boolean keepAspect) {
         }
 
-        @FeatureEntryPoint("SetBoundsAction")
         protected void setBounds(Point2D.Double anchor, Point2D.Double lead) {
             Figure f = getOwner();
             f.willChange();
