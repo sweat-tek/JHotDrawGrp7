@@ -39,5 +39,9 @@
 	  <artifactId>jhotdraw-app</artifactId>
 	  <version>${project.version}</version>
 	 </dependency>
-	</dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
 </project>
