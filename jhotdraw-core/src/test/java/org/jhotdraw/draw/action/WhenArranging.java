@@ -32,6 +32,18 @@ public class WhenArranging extends Stage<WhenArranging> {
         return self();
     }
 
+    public WhenArranging sending_specific_figure_to_back(Figure figure) {
+        DrawingView mockView = mock(DrawingView.class);
+        Drawing drawing = new QuadTreeDrawing();
+        drawing.addAll(figures);
+        org.mockito.Mockito.when(mockView.getDrawing()).thenReturn(drawing);
+
+        SendToBackAction.sendToBack(mockView, Collections.singletonList(figure));
+
+        sortedFigures = drawing.getFiguresFrontToBack();
+        return self();
+    }
+
     public WhenArranging bringing_figure_to_front() {
         DrawingView mockView = mock(DrawingView.class);
         Drawing drawing = new QuadTreeDrawing();
@@ -39,6 +51,18 @@ public class WhenArranging extends Stage<WhenArranging> {
         org.mockito.Mockito.when(mockView.getDrawing()).thenReturn(drawing);
 
         BringToFrontAction.bringToFront(mockView, Collections.singletonList(figures.get(1)));
+
+        sortedFigures = drawing.getFiguresFrontToBack();
+        return self();
+    }
+
+    public WhenArranging bringing_figure_to_front(Figure figure) {
+        DrawingView mockView = mock(DrawingView.class);
+        Drawing drawing = new QuadTreeDrawing();
+        drawing.addAll(figures);
+        org.mockito.Mockito.when(mockView.getDrawing()).thenReturn(drawing);
+
+        BringToFrontAction.bringToFront(mockView, Collections.singletonList(figure));
 
         sortedFigures = drawing.getFiguresFrontToBack();
         return self();

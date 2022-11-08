@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 public class SendToBackActionTest {
 
     @Test
-    public void sendToBack() {
+    public void figure_should_be_sent_to_back() {
         // Arrange
         DrawingView mockView = mock(DrawingView.class);
         Drawing drawing = new QuadTreeDrawing();

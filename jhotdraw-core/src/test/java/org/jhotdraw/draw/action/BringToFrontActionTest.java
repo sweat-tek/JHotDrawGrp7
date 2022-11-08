@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 public class BringToFrontActionTest {
 
     @Test
-    public void bringToFront() {
+    public void figure_should_be_brought_to_front() {
         // Arrange
         DrawingView mockView = mock(DrawingView.class);
         Drawing drawing = new QuadTreeDrawing();
@@ -30,8 +30,6 @@ public class BringToFrontActionTest {
         figures.add(figure2);
         drawing.addAll(figures);
         when(mockView.getDrawing()).thenReturn(drawing);
-
-
 
         // Act
         BringToFrontAction.bringToFront(mockView, Collections.singletonList(figure2));
