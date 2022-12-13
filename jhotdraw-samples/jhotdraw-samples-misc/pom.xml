@@ -43,5 +43,12 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
+		<dependency>
+			<groupId>com.tngtech.jgiven</groupId>
+			<artifactId>jgiven-junit</artifactId>
+			<version>1.0.0-RC6</version>
+			<scope>test</scope>
+		</dependency>
     </dependencies>
+
 </project>
