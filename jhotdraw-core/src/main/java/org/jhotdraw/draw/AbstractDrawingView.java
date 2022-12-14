@@ -938,7 +938,7 @@ public abstract class AbstractDrawingView implements DrawingView, EditableCompon
     @Override
     public void delete() {
         final java.util.List<Figure> figuresToBeDeleted = drawing.sort(getSelectedFigures());
-        if(DeletionUtils.tryUndoableDeleteFigures(this, figuresToBeDeleted)){
+        if (DeletionUtils.tryUndoableDeleteFigures(this, figuresToBeDeleted)){
             clearSelection();
         }
     }

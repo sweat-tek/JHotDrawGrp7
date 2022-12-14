@@ -19,7 +19,7 @@ public class DeletionUtils {
         int[] deletedIndicies = getFigureZIndicies(drawing, figures);
 
         boolean deletionFailed = !tryDeleteFigures(drawing, figures);
-        if(deletionFailed){
+        if (deletionFailed){
             return false;
         }
 
@@ -37,12 +37,12 @@ public class DeletionUtils {
      * @return true if deletion was successfull, otherwise false.
      */
     public static boolean tryDeleteFigures(Drawing drawing, List<Figure> figures){
-        if(figures.isEmpty()){
+        if (figures.isEmpty()){
             return false;
         }
 
-        boolean anyFigureIsNonRemoveable = figures.stream().anyMatch(x->!x.isRemovable());
-        if(anyFigureIsNonRemoveable){
+        boolean anyFigureIsNonRemoveable = figures.stream().anyMatch(x -> !x.isRemovable());
+        if (anyFigureIsNonRemoveable){
             return false;
         }
 

@@ -1289,9 +1289,9 @@ public class DefaultDrawingView
     public void delete() {
         final java.util.List<Figure> figuresToBeDeleted = drawing.sort(getSelectedFigures());
 
-        if(DeletionUtils.tryUndoableDeleteFigures(this, figuresToBeDeleted)){
+        if (DeletionUtils.tryUndoableDeleteFigures(this, figuresToBeDeleted)){
             clearSelection();
-        }else{
+        } else {
             getToolkit().beep();
         }
     }
