@@ -1,7 +1,8 @@
 package org.jhotdraw.draw.deletion;
 
-import com.tngtech.jgiven.testng.ScenarioTest;
-import org.testng.annotations.Test;
+
+import com.tngtech.jgiven.junit.ScenarioTest;
+import org.junit.Test;
 
 public class DefaultDrawingViewBehaviorTest extends ScenarioTest<GivenDeletion, WhenDeletion, ThenDeletion> {
 

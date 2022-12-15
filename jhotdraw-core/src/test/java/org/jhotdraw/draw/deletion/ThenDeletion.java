@@ -7,7 +7,8 @@ import org.jhotdraw.draw.figure.Figure;
 
 import java.util.List;
 
-import static org.testng.Assert.*;
+import static org.junit.Assert.*;
+
 
 public class ThenDeletion extends Stage<ThenDeletion> {
     @ScenarioState

@@ -3,15 +3,15 @@ package org.jhotdraw.draw.deletion;
 import org.jhotdraw.draw.Drawing;
 import org.jhotdraw.draw.DrawingView;
 import org.jhotdraw.draw.figure.Figure;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.testng.annotations.Test;
 
 import javax.swing.undo.UndoableEdit;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tngtech.jgiven.impl.util.AssertionUtil.*;
 import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
 
 public class DeletionUtilsTest {
 
