@@ -8,6 +8,7 @@
 package org.jhotdraw.draw.tool;
 
 import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
+import org.jhotdraw.draw.event.CreateEdit;
 import org.jhotdraw.draw.figure.Figure;
 import org.jhotdraw.draw.figure.CompositeFigure;
 import java.awt.*;
@@ -217,60 +218,55 @@ public class CreationTool extends AbstractTool {
 
     @Override
     public void mouseReleased(MouseEvent evt) {
-        if (createdFigure != null) {
-            Rectangle2D.Double bounds = createdFigure.getBounds();
-            if (bounds.width == 0 && bounds.height == 0) {
-                getDrawing().remove(createdFigure);
-                if (isToolDoneAfterCreation()) {
-                    fireToolDone();
-                }
-            } else {
-                if (Math.abs(anchor.x - evt.getX()) < minimalSizeTreshold.width
-                        && Math.abs(anchor.y - evt.getY()) < minimalSizeTreshold.height) {
-                    createdFigure.willChange();
-                    createdFigure.setBounds(
-                            constrainPoint(new Point(anchor.x, anchor.y), createdFigure),
-                            constrainPoint(new Point(
-                                    anchor.x + (int) Math.max(bounds.width, minimalSize.width),
-                                    anchor.y + (int) Math.max(bounds.height, minimalSize.height)),
-                                    createdFigure));
-                    createdFigure.changed();
-                }
-                if (createdFigure instanceof CompositeFigure) {
-                    ((CompositeFigure) createdFigure).layout();
-                }
-                final Figure addedFigure = createdFigure;
-                final Drawing addedDrawing = getDrawing();
-                getDrawing().fireUndoableEditHappened(new AbstractUndoableEdit() {
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
-                    public String getPresentationName() {
-                        return presentationName;
-                    }
-
-                    @Override
-                    public void undo() throws CannotUndoException {
-                        super.undo();
-                        addedDrawing.remove(addedFigure);
-                    }
-
-                    @Override
-                    public void redo() throws CannotRedoException {
-                        super.redo();
-                        addedDrawing.add(addedFigure);
-                    }
-                });
-                Rectangle r = new Rectangle(anchor.x, anchor.y, 0, 0);
-                r.add(evt.getX(), evt.getY());
-                maybeFireBoundsInvalidated(r);
-                creationFinished(createdFigure);
-                createdFigure = null;
-            }
-        } else {
+        // Check that the figure is not null
+        if (createdFigure == null) {
             if (isToolDoneAfterCreation()) {
                 fireToolDone();
             }
+            return;
+        }
+
+        // Remove the figure if its width and height is zero
+        Rectangle2D.Double bounds = createdFigure.getBounds();
+        if (bounds.width == 0 && bounds.height == 0) {
+            getDrawing().remove(createdFigure);
+            if (isToolDoneAfterCreation()) {
+                fireToolDone();
+            }
+            return;
+        }
+
+        // Draw the figure
+        enforceMinimalSizeThresholds(evt, bounds);
+        if (createdFigure instanceof CompositeFigure) {
+            ((CompositeFigure) createdFigure).layout();
+        }
+        addFigureToDrawing(evt);
+
+    }
+
+    private void addFigureToDrawing(MouseEvent evt) {
+        final Drawing addedDrawing = getDrawing();
+        getDrawing().fireUndoableEditHappened(
+                new CreateEdit(presentationName, createdFigure, addedDrawing));
+        Rectangle r = new Rectangle(anchor.x, anchor.y, 0, 0);
+        r.add(evt.getX(), evt.getY());
+        maybeFireBoundsInvalidated(r);
+        creationFinished(createdFigure);
+        createdFigure = null;
+    }
+
+    private void enforceMinimalSizeThresholds(MouseEvent evt, Rectangle2D.Double bounds) {
+        if (Math.abs(anchor.x - evt.getX()) < minimalSizeTreshold.width
+                && Math.abs(anchor.y - evt.getY()) < minimalSizeTreshold.height) {
+            createdFigure.willChange();
+            createdFigure.setBounds(
+                    constrainPoint(new Point(anchor.x, anchor.y), createdFigure),
+                    constrainPoint(new Point(
+                            anchor.x + (int) Math.max(bounds.width, minimalSize.width),
+                            anchor.y + (int) Math.max(bounds.height, minimalSize.height)),
+                            createdFigure));
+            createdFigure.changed();
         }
     }
 
