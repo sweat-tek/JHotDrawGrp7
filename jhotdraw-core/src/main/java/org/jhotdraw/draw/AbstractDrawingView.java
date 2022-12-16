@@ -18,6 +18,7 @@
  */
 package org.jhotdraw.draw;
 
+import org.jhotdraw.draw.deletion.DeletionUtils;
 import org.jhotdraw.draw.figure.Figure;
 import static com.sun.java.accessibility.util.AWTEventMonitor.addFocusListener;
 import java.awt.Color;
@@ -62,11 +63,7 @@ import static org.jhotdraw.draw.AttributeKeys.CANVAS_FILL_COLOR;
 import static org.jhotdraw.draw.AttributeKeys.CANVAS_FILL_OPACITY;
 import static org.jhotdraw.draw.AttributeKeys.CANVAS_HEIGHT;
 import static org.jhotdraw.draw.AttributeKeys.CANVAS_WIDTH;
-import static org.jhotdraw.draw.DrawingView.ACTIVE_HANDLE_PROPERTY;
-import static org.jhotdraw.draw.DrawingView.CONSTRAINER_VISIBLE_PROPERTY;
-import static org.jhotdraw.draw.DrawingView.DRAWING_PROPERTY;
-import static org.jhotdraw.draw.DrawingView.INVISIBLE_CONSTRAINER_PROPERTY;
-import static org.jhotdraw.draw.DrawingView.VISIBLE_CONSTRAINER_PROPERTY;
+
 import org.jhotdraw.draw.event.CompositeFigureEvent;
 import org.jhotdraw.draw.event.CompositeFigureListener;
 import org.jhotdraw.draw.event.FigureAdapter;
@@ -940,50 +937,10 @@ public abstract class AbstractDrawingView implements DrawingView, EditableCompon
 
     @Override
     public void delete() {
-        final List<Figure> deletedFigures = drawing.sort(getSelectedFigures());
-        for (Figure f : deletedFigures) {
-            if (!f.isRemovable()) {
-                return;
-            }
+        final java.util.List<Figure> figuresToBeDeleted = drawing.sort(getSelectedFigures());
+        if (DeletionUtils.tryUndoableDeleteFigures(this, figuresToBeDeleted)){
+            clearSelection();
         }
-        // Get z-indices of deleted figures
-        final int[] deletedFigureIndices = new int[deletedFigures.size()];
-        for (int i = 0; i
-                < deletedFigureIndices.length; i++) {
-            deletedFigureIndices[i] = drawing.indexOf(deletedFigures.get(i));
-        }
-        clearSelection();
-        drawing.removeAll(deletedFigures);
-        drawing.fireUndoableEditHappened(new AbstractUndoableEdit() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public String getPresentationName() {
-                ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.draw.Labels");
-                return labels.getString("edit.delete.text");
-            }
-
-            @Override
-            public void undo() throws CannotUndoException {
-                super.undo();
-                clearSelection();
-                Drawing d = drawing;
-                for (int i = 0; i
-                        < deletedFigureIndices.length; i++) {
-                    d.add(deletedFigureIndices[i], deletedFigures.get(i));
-                }
-                addToSelection(deletedFigures);
-            }
-
-            @Override
-            public void redo() throws CannotRedoException {
-                super.redo();
-                for (int i = 0; i
-                        < deletedFigureIndices.length; i++) {
-                    drawing.remove(deletedFigures.get(i));
-                }
-            }
-        });
     }
 
     @Override
