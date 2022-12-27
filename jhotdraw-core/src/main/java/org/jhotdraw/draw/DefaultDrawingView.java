@@ -1315,7 +1315,11 @@ public class DefaultDrawingView
             f.remap(originalToDuplicateMap, false);
         }
         addToSelection(duplicates);
-        getDrawing().fireUndoableEditHappened(new AbstractUndoableEdit() {
+        getDrawing().fireUndoableEditHappened(createDuplicateEdit(duplicates));
+    }
+
+    private AbstractUndoableEdit createDuplicateEdit(ArrayList<Figure> duplicates) {
+        return new AbstractUndoableEdit() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -1335,7 +1339,7 @@ public class DefaultDrawingView
                 super.redo();
                 getDrawing().addAll(duplicates);
             }
-        });
+        };
     }
 
     @Override

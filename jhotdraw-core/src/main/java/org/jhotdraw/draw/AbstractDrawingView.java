@@ -962,7 +962,11 @@ public abstract class AbstractDrawingView implements DrawingView, EditableCompon
             f.remap(originalToDuplicateMap, false);
         }
         addToSelection(duplicates);
-        drawing.fireUndoableEditHappened(new AbstractUndoableEdit() {
+        drawing.fireUndoableEditHappened(createDuplicateEdit(duplicates));
+    }
+
+    private AbstractUndoableEdit createDuplicateEdit(ArrayList<Figure> duplicates) {
+        return new AbstractUndoableEdit() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -982,7 +986,7 @@ public abstract class AbstractDrawingView implements DrawingView, EditableCompon
                 super.redo();
                 drawing.addAll(duplicates);
             }
-        });
+        };
     }
 
     @Override

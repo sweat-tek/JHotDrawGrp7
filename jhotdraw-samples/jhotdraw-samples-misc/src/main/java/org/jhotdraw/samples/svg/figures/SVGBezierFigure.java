@@ -69,50 +69,54 @@ public class SVGBezierFigure extends BezierFigure {
 
     @Override
     public boolean handleMouseClick(Point2D.Double p, MouseEvent evt, DrawingView view) {
-        if (evt.getClickCount() == 2/* && view.getHandleDetailLevel() == 0*/) {
-            willChange();
-            // Apply inverse of transform to point
-            if (get(TRANSFORM) != null) {
-                try {
-                    p = (Point2D.Double) get(TRANSFORM).inverseTransform(p, new Point2D.Double());
-                } catch (NoninvertibleTransformException ex) {
-                    System.err.println("Warning: SVGBezierFigure.handleMouseClick. Figure has noninvertible Transform.");
-                }
-            }
-            final int index = splitSegment(p, (float) (5f / view.getScaleFactor()));
-            if (index != -1) {
-                final BezierPath.Node newNode = getNode(index);
-                fireUndoableEditHappened(new AbstractUndoableEdit() {
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
-                    public String getPresentationName() {
-                        ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.draw.Labels");
-                        return labels.getString("edit.bezierPath.splitSegment.text");
-                    }
-
-                    @Override
-                    public void redo() throws CannotRedoException {
-                        super.redo();
-                        willChange();
-                        addNode(index, newNode);
-                        changed();
-                    }
-
-                    @Override
-                    public void undo() throws CannotUndoException {
-                        super.undo();
-                        willChange();
-                        removeNode(index);
-                        changed();
-                    }
-                });
-                changed();
-                evt.consume();
-                return true;
+        if (evt.getClickCount() != 2) {
+            return false;
+        }
+        willChange();
+        // Apply inverse of transform to point
+        if (get(TRANSFORM) != null) {
+            try {
+                p = (Point2D.Double) get(TRANSFORM).inverseTransform(p, new Point2D.Double());
+            } catch (NoninvertibleTransformException ex) {
+                System.err.println("Warning: SVGBezierFigure.handleMouseClick. Figure has noninvertible Transform.");
             }
         }
-        return false;
+        final int index = splitSegment(p, (float) (5f / view.getScaleFactor()));
+        if (index == 1) {
+            return false;
+        }
+        fireUndoableEditHappened(createSplitSegmentEdit(index, getNode(index)));
+        changed();
+        evt.consume();
+        return true;
+    }
+
+    private AbstractUndoableEdit createSplitSegmentEdit(int index, BezierPath.Node newNode) {
+        return new AbstractUndoableEdit() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public String getPresentationName() {
+                ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.draw.Labels");
+                return labels.getString("edit.bezierPath.splitSegment.text");
+            }
+
+            @Override
+            public void redo() throws CannotRedoException {
+                super.redo();
+                willChange();
+                addNode(index, newNode);
+                changed();
+            }
+
+            @Override
+            public void undo() throws CannotUndoException {
+                super.undo();
+                willChange();
+                removeNode(index);
+                changed();
+            }
+        };
     }
 
     @Override

@@ -92,7 +92,12 @@ public class AttributeToggler<T> extends AbstractAction {
             figure.set(key, newValue);
             figure.changed();
         }
-        UndoableEdit edit = new AbstractUndoableEdit() {
+        UndoableEdit edit = createUndoableEdit(selectedFigures, restoreData, newValue);
+        getView().getDrawing().fireUndoableEditHappened(edit);
+    }
+
+    private AbstractUndoableEdit createUndoableEdit(ArrayList<Figure> selectedFigures, ArrayList<Object> restoreData, T newValue) {
+        return new AbstractUndoableEdit() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -130,6 +135,5 @@ public class AttributeToggler<T> extends AbstractAction {
                 }
             }
         };
-        getView().getDrawing().fireUndoableEditHappened(edit);
     }
 }
