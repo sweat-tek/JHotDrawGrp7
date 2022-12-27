@@ -18,6 +18,7 @@
  */
 package org.jhotdraw.draw;
 
+import org.jhotdraw.draw.deletion.DeletionUtils;
 import org.jhotdraw.draw.figure.Figure;
 import static com.sun.java.accessibility.util.AWTEventMonitor.addFocusListener;
 import java.awt.Color;
@@ -936,54 +937,10 @@ public abstract class AbstractDrawingView implements DrawingView, EditableCompon
 
     @Override
     public void delete() {
-        final List<Figure> deletedFigures = drawing.sort(getSelectedFigures());
-        for (Figure f : deletedFigures) {
-            if (!f.isRemovable()) {
-                return;
-            }
+        final java.util.List<Figure> figuresToBeDeleted = drawing.sort(getSelectedFigures());
+        if (DeletionUtils.tryUndoableDeleteFigures(this, figuresToBeDeleted)){
+            clearSelection();
         }
-        // Get z-indices of deleted figures
-        final int[] deletedFigureIndices = new int[deletedFigures.size()];
-        for (int i = 0; i
-                < deletedFigureIndices.length; i++) {
-            deletedFigureIndices[i] = drawing.indexOf(deletedFigures.get(i));
-        }
-        clearSelection();
-        drawing.removeAll(deletedFigures);
-        drawing.fireUndoableEditHappened(createDeleteEdit(deletedFigures, deletedFigureIndices));
-    }
-
-    private AbstractUndoableEdit createDeleteEdit(List<Figure> deletedFigures, int[] deletedFigureIndices) {
-        return new AbstractUndoableEdit() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public String getPresentationName() {
-                ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.draw.Labels");
-                return labels.getString("edit.delete.text");
-            }
-
-            @Override
-            public void undo() throws CannotUndoException {
-                super.undo();
-                clearSelection();
-                Drawing d = drawing;
-                for (int i = 0; i
-                        < deletedFigureIndices.length; i++) {
-                    d.add(deletedFigureIndices[i], deletedFigures.get(i));
-                }
-                addToSelection(deletedFigures);
-            }
-
-            @Override
-            public void redo() throws CannotRedoException {
-                super.redo();
-                for (int i = 0; i
-                        < deletedFigureIndices.length; i++) {
-                    drawing.remove(deletedFigures.get(i));
-                }
-            }
-        };
     }
 
     @Override
