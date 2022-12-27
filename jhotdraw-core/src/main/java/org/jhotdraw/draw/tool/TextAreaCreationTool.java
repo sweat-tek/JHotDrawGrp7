@@ -209,7 +209,7 @@ public class TextAreaCreationTool extends CreationTool implements ActionListener
         //         view().checkDamage();
     }
 
-    private AbstractUndoableEdit createUndoableEndEdit(TextHolderFigure editedFigure, String oldText, String newText) {
+    public AbstractUndoableEdit createUndoableEndEdit(TextHolderFigure editedFigure, String oldText, String newText) {
         return new AbstractUndoableEdit() {
             private static final long serialVersionUID = 1L;
 
