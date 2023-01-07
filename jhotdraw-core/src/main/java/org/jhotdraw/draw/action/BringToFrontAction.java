@@ -21,7 +21,6 @@ import org.jhotdraw.util.ResourceBundleUtil;
  * @version $Id$
  */
 public class BringToFrontAction extends AbstractSelectedAction {
-
     private static final long serialVersionUID = 1L;
     public static final String ID = "edit.bringToFront";
 
@@ -42,28 +41,8 @@ public class BringToFrontAction extends AbstractSelectedAction {
         final DrawingView view = getView();
         final LinkedList<Figure> figures = new LinkedList<>(view.getSelectedFigures());
         bringToFront(view, figures);
-        fireUndoableEditHappened(new AbstractUndoableEdit() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public String getPresentationName() {
-                ResourceBundleUtil labels
-                        = ResourceBundleUtil.getBundle("org.jhotdraw.draw.Labels");
-                return labels.getTextProperty(ID);
-            }
-
-            @Override
-            public void redo() throws CannotRedoException {
-                super.redo();
-                BringToFrontAction.bringToFront(view, figures);
-            }
-
-            @Override
-            public void undo() throws CannotUndoException {
-                super.undo();
-                SendToBackAction.sendToBack(view, figures);
-            }
-        });
+        UndoableBringToFront event = new UndoableBringToFront(ID, view, figures);
+        fireUndoableEditHappened(event);
     }
 
     public static void bringToFront(DrawingView view, Collection<Figure> figures) {

@@ -110,21 +110,18 @@ public abstract class AbstractFigure
      * Notify all listenerList that have registered interest for notification on this event type.
      */
     protected void fireAreaInvalidated(Rectangle2D.Double invalidatedArea) {
-        if (listenerList.getListenerCount() > 0) {
-            FigureEvent event = null;
-            // Notify all listeners that have registered interest for
-            // Guaranteed to return a non-null array
-            Object[] listeners = listenerList.getListenerList();
-            // Process the listeners last to first, notifying
-            // those that are interested in this event
-            for (int i = listeners.length - 2; i >= 0; i -= 2) {
-                if (listeners[i] == FigureListener.class) {
-                    // Lazily create the event:
-                    if (event == null) {
-                        event = new FigureEvent(this, invalidatedArea);
-                    }
-                    ((FigureListener) listeners[i + 1]).areaInvalidated(event);
+        if (listenerList.getListenerCount() <= 1){
+            return;
+        }
+        FigureEvent event = null;
+        // Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == FigureListener.class) {
+                if (event == null) {
+                    event = new FigureEvent(this, invalidatedArea);
                 }
+                ((FigureListener) listeners[i + 1]).areaInvalidated(event);
             }
         }
     }
@@ -133,11 +130,8 @@ public abstract class AbstractFigure
      * Notify all listenerList that have registered interest for notification on this event type.
      */
     protected void fireAreaInvalidated(FigureEvent event) {
-        // Notify all listeners that have registered interest for
         // Guaranteed to return a non-null array
         Object[] listeners = listenerList.getListenerList();
-        // Process the listeners last to first, notifying
-        // those that are interested in this event
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
             if (listeners[i] == FigureListener.class) {
                 ((FigureListener) listeners[i + 1]).areaInvalidated(event);
