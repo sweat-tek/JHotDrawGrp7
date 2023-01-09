@@ -149,46 +149,51 @@ public class CombineAction extends AbstractSelectedAction {
     public void splitActionPerformed(java.awt.event.ActionEvent e) {
         final DrawingView view = getView();
         Drawing drawing = view.getDrawing();
-        if (canUngroup()) {
-            final CompositeFigure group = (CompositeFigure) view.getSelectedFigures().iterator().next();
-            final LinkedList<Figure> ungroupedPaths = new LinkedList<Figure>();
-            final int[] ungroupedPathsIndices = new int[group.getChildCount()];
-            final int[] ungroupedPathsChildCounts = new int[group.getChildCount()];
-            int i = 0;
-            int index = drawing.indexOf(group);
-            for (Figure f : group.getChildren()) {
-                SVGPathFigure path = new SVGPathFigure(true);
-                for (Map.Entry<AttributeKey<?>, Object> entry : group.getAttributes().entrySet()) {
-                    path.set((AttributeKey<Object>) entry.getKey(), entry.getValue());
-                }
-                ungroupedPaths.add(path);
-                ungroupedPathsIndices[i] = index + i;
-                ungroupedPathsChildCounts[i] = 1;
-                i++;
-            }
-            splitPath(view, group, ungroupedPaths, ungroupedPathsIndices, ungroupedPathsChildCounts);
-            UndoableEdit edit = new AbstractUndoableEdit() {
-                private static final long serialVersionUID = 1L;
-
-                @Override
-                public String getPresentationName() {
-                    return labels.getTextProperty("edit.splitPath");
-                }
-
-                @Override
-                public void redo() throws CannotRedoException {
-                    super.redo();
-                    splitPath(view, group, ungroupedPaths, ungroupedPathsIndices, ungroupedPathsChildCounts);
-                }
-
-                @Override
-                public void undo() throws CannotUndoException {
-                    super.undo();
-                    combinePaths(view, group, ungroupedPaths, ungroupedPathsIndices[0]);
-                }
-            };
-            fireUndoableEditHappened(edit);
+        if (!canGroup()) {
+            return;
         }
+        final CompositeFigure group = (CompositeFigure) view.getSelectedFigures().iterator().next();
+        final LinkedList<Figure> ungroupedPaths = new LinkedList<Figure>();
+        final int[] ungroupedPathsIndices = new int[group.getChildCount()];
+        final int[] ungroupedPathsChildCounts = new int[group.getChildCount()];
+        int i = 0;
+        int index = drawing.indexOf(group);
+        for (Figure f : group.getChildren()) {
+            SVGPathFigure path = new SVGPathFigure(true);
+            for (Map.Entry<AttributeKey<?>, Object> entry : group.getAttributes().entrySet()) {
+                path.set((AttributeKey<Object>) entry.getKey(), entry.getValue());
+            }
+            ungroupedPaths.add(path);
+            ungroupedPathsIndices[i] = index + i;
+            ungroupedPathsChildCounts[i] = 1;
+            i++;
+        }
+        splitPath(view, group, ungroupedPaths, ungroupedPathsIndices, ungroupedPathsChildCounts);
+        fireUndoableEditHappened(createSplitPathEdit(view, group, ungroupedPaths, ungroupedPathsIndices, ungroupedPathsChildCounts));
+    }
+
+    private AbstractUndoableEdit createSplitPathEdit(DrawingView view, CompositeFigure group, LinkedList<Figure> ungroupedPaths,
+                                                     int[] ungroupedPathsIndices, int[] ungroupedPathsChildCounts) {
+        return new AbstractUndoableEdit() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public String getPresentationName() {
+                return labels.getTextProperty("edit.splitPath");
+            }
+
+            @Override
+            public void redo() throws CannotRedoException {
+                super.redo();
+                splitPath(view, group, ungroupedPaths, ungroupedPathsIndices, ungroupedPathsChildCounts);
+            }
+
+            @Override
+            public void undo() throws CannotUndoException {
+                super.undo();
+                combinePaths(view, group, ungroupedPaths, ungroupedPathsIndices[0]);
+            }
+        };
     }
 
     public void splitPath(DrawingView view, CompositeFigure group, List<Figure> ungroupedPaths, int[] ungroupedPathsIndices, int[] ungroupedPathsChildCounts) {

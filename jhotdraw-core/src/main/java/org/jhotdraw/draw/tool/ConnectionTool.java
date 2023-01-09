@@ -42,8 +42,8 @@ import org.jhotdraw.util.*;
  * Two figures can be connected using a connection figure. The location of
  * the start or end point of the connection is handled by a connector object
  * at each connected figure.<br>
- * Contract: {@link org.jhotdraw.draw.Figure},
- * {@link org.jhotdraw.draw.ConnectionFigure},
+ * Contract: {@link org.jhotdraw.draw.figure.Figure},
+ * {@link org.jhotdraw.draw.figure.ConnectionFigure},
  * {@link org.jhotdraw.draw.connector.Connector},
  * {@link org.jhotdraw.draw.tool.ConnectionTool}.
  *
@@ -281,28 +281,7 @@ public class ConnectionTool extends AbstractTool {
             createdFigure.setEndConnector(endConnector);
             createdFigure.updateConnection();
             createdFigure.changed();
-            final Figure addedFigure = createdFigure;
-            final Drawing addedDrawing = getDrawing();
-            getDrawing().fireUndoableEditHappened(new AbstractUndoableEdit() {
-                private static final long serialVersionUID = 1L;
-
-                @Override
-                public String getPresentationName() {
-                    return presentationName;
-                }
-
-                @Override
-                public void undo() throws CannotUndoException {
-                    super.undo();
-                    addedDrawing.remove(addedFigure);
-                }
-
-                @Override
-                public void redo() throws CannotRedoException {
-                    super.redo();
-                    addedDrawing.add(addedFigure);
-                }
-            });
+            getDrawing().fireUndoableEditHappened(createMouseReleasedEdit(createdFigure, getDrawing()));
             targetFigure = null;
             Point2D.Double anchor = startConnector.getAnchor();
             Rectangle r = new Rectangle(getView().drawingToView(anchor));
@@ -321,6 +300,29 @@ public class ConnectionTool extends AbstractTool {
                 fireToolDone();
             }
         }
+    }
+
+    private AbstractUndoableEdit createMouseReleasedEdit(Figure addedFigure, Drawing addedDrawing) {
+        return new AbstractUndoableEdit() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public String getPresentationName() {
+                return presentationName;
+            }
+
+            @Override
+            public void undo() throws CannotUndoException {
+                super.undo();
+                addedDrawing.remove(addedFigure);
+            }
+
+            @Override
+            public void redo() throws CannotRedoException {
+                super.redo();
+                addedDrawing.add(addedFigure);
+            }
+        };
     }
 
     @Override

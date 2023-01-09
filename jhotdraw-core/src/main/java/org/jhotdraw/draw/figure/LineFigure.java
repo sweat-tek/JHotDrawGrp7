@@ -66,34 +66,35 @@ public class LineFigure extends BezierFigure {
      */
     @Override
     public boolean handleMouseClick(Point2D.Double p, MouseEvent evt, DrawingView view) {
-        if (evt.getClickCount() == 2 && view.getHandleDetailLevel() == 0) {
-            willChange();
-            final int index = splitSegment(p, (float) (5f / view.getScaleFactor()));
-            if (index != -1) {
-                final BezierPath.Node newNode = getNode(index);
-                fireUndoableEditHappened(new AbstractUndoableEdit() {
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
-                    public void redo() throws CannotRedoException {
-                        super.redo();
-                        willChange();
-                        addNode(index, newNode);
-                        changed();
-                    }
-
-                    @Override
-                    public void undo() throws CannotUndoException {
-                        super.undo();
-                        willChange();
-                        removeNode(index);
-                        changed();
-                    }
-                });
-                changed();
-                return true;
-            }
+        if (evt.getClickCount() != 2 || view.getHandleDetailLevel() != 0) {
+            return false;
         }
-        return false;
+        willChange();
+        final int index = splitSegment(p, (float) (5f / view.getScaleFactor()));
+        if (index == -1) {
+            return false;
+        }
+        final BezierPath.Node newNode = getNode(index);
+        fireUndoableEditHappened(new AbstractUndoableEdit() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void redo() throws CannotRedoException {
+                super.redo();
+                willChange();
+                addNode(index, newNode);
+                changed();
+            }
+
+            @Override
+            public void undo() throws CannotUndoException {
+                super.undo();
+                willChange();
+                removeNode(index);
+                changed();
+            }
+        });
+        changed();
+        return true;
     }
 }
